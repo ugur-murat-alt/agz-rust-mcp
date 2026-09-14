@@ -42,7 +42,7 @@ Rust/Cargo and optional adapters remain local executable prerequisites.
 
 ### Filesystem delivery to each client
 
-Installing the executable (including through npm) does not automatically write
+Installing the executable does not automatically write
 skill files into client configuration directories. MCP prompts/resources are
 available immediately; native skill discovery needs the four exported folders.
 Export once to a new temporary directory, then copy the selected folders without
@@ -63,26 +63,13 @@ The installer does not overwrite user skill instructions in the background.
 - Linux, macOS, or Windows on x86_64, or macOS on arm64.
 - An MCP-capable client (ZCode, OpenCode, OpenCode2, Codex, or another stdio client).
 - Rust `1.88.0` or newer only for the `cargo install` and source methods.
-- Node.js only for the npm wrapper.
 
-## 1. npm Wrapper
-
-```bash
-npx -y @agz-yazilim/agz-rust-mcp@latest --version
-```
-
-The wrapper is the managed option: it resolves and caches the release artifact
-matching your platform and forwards stdio to it, so the server itself is not
-built on your machine. Pin an exact wrapper version in client configuration
-instead of relying on the floating tag, so upgrades stay explicit. Requires
-Node.js and network access on first use.
-
-## 2. Installer Script (`install.sh`)
+## 1. Installer Script (`install.sh`)
 
 The installer downloads a release archive, verifies its published SHA-256
 checksum before extraction, refuses symlink destinations, verifies the staged
 binary, and installs atomically. It currently supports **Linux x86_64 only**;
-other platforms get a clear error and should use method 3, 4, or 5.
+other platforms get a clear error and should use method 2, 3, or 4.
 
 Download the installer and checksum manifest from the release page, verify the
 script itself, then run it:
@@ -114,7 +101,7 @@ The installer also verifies the archive layout and the extracted binary's
 `--version` before replacing an existing file. A `SHA256SUMS` file covers the
 crate, source bundle, and installer; each archive ships its own `.tar.gz.sha256`.
 
-## 3. Prebuilt Archives
+## 2. Prebuilt Archives
 
 Release pages provide `.tar.gz` archives with a matching `.sha256` file:
 
@@ -156,7 +143,7 @@ tar -xzf .\agz-rust-mcp-windows-x86_64.tar.gz
 Compare the printed hash with the `.sha256` file before extracting. Never run
 an archive whose checksum does not match.
 
-## 4. crates.io (`cargo install`)
+## 3. crates.io (`cargo install`)
 
 Requires Rust `1.88.0` or newer:
 
@@ -171,7 +158,7 @@ Pin a release with `cargo install agz-rust-mcp --version 0.4.0 --locked`.
 Cargo installs to `$HOME/.cargo/bin` (`%USERPROFILE%\.cargo\bin` on Windows);
 ensure that directory is on `PATH`.
 
-## 5. From Source
+## 4. From Source
 
 ```bash
 git clone https://github.com/ugur-murat-alt/agz-rust-mcp
@@ -197,12 +184,10 @@ on `PATH`, or point the client at its absolute path. See
 
 ## MCP Client Setup
 
-Before connecting the client, run `npx -y @agz-yazilim/agz-rust-mcp@latest --version`
-once to download and verify the release. `@latest` explicitly refreshes npm
-resolution; use `@0.4.0` instead to pin this release. Automatic PATH selection
-requires the wrapper's version, so an older installed binary cannot silently
-win. `AGZ_RUST_MCP_BIN` is an explicit local override and intentionally bypasses
-automatic version selection; unset it when verifying the published release.
+Before connecting the client, install the release as described above and run
+`agz-rust-mcp --version` once to verify the executable. `AGZ_RUST_MCP_BIN` is an
+explicit local override and intentionally bypasses automatic PATH selection;
+unset it when verifying the published release.
 
 ### Multiple checkouts, worktrees and package subdirectories
 
@@ -242,8 +227,8 @@ its user file has an extra `cli/` directory.
   "mcp": {
     "servers": {
       "rust": {
-        "command": "npx",
-        "args": ["-y", "@agz-yazilim/agz-rust-mcp@latest"]
+        "command": "agz-rust-mcp",
+        "args": []
       }
     }
   }
@@ -265,7 +250,7 @@ Current OpenCode uses `mcp.rust`, with an array command and numeric timeout:
   "mcp": {
     "rust": {
       "type": "local",
-      "command": ["npx", "-y", "@agz-yazilim/agz-rust-mcp@latest"],
+      "command": ["agz-rust-mcp"],
       "enabled": true,
       "timeout": 120000
     }
@@ -302,12 +287,6 @@ format your installed client accepts.
 }
 ```
 
-Wrapper-managed variant:
-
-```jsonc
-"command": ["npx", "-y", "@agz-yazilim/agz-rust-mcp@latest"],
-```
-
 ### Codex (`~/.codex/config.toml`)
 
 ```toml
@@ -316,20 +295,8 @@ command = "agz-rust-mcp"
 args = []
 ```
 
-Wrapper-managed variant:
-
-```toml
-[mcp_servers.rust]
-command = "npx"
-args = ["-y", "@agz-yazilim/agz-rust-mcp@latest"]
-startup_timeout_sec = 120
-tool_timeout_sec = 720
-```
-
-Managed wrapper note: with the npm wrapper the client config never changes when
-the underlying binary is updated; pin the wrapper version for reproducibility.
-With a direct binary, use an absolute path if the client's `PATH` differs from
-your shell's. Restart or reload the client after editing its configuration.
+Use an absolute path if the client's `PATH` differs from your shell's. Restart
+or reload the client after editing its configuration.
 
 Configuration precedence is CLI flags, then `AGZ_RUST_MCP_*` environment
 variables, then `--config` TOML, then defaults; the complete key reference is in
@@ -376,7 +343,6 @@ variables, then `--config` TOML, then defaults; the complete key reference is in
 | `agz-rust-mcp: command not found` | Add the install directory (`$HOME/.local/bin` or `$HOME/.cargo/bin`) to `PATH`, or use an absolute path in the client config. |
 | Checksum mismatch | Re-download the archive and its `.sha256` from the release page; do not bypass verification. |
 | Installer rejects the OS or architecture | `install.sh` supports Linux x86_64 only; use a prebuilt archive, `cargo install`, or a source build. |
-| `npx` starts an unexpected version | Pin the wrapper version in the client config and clear stale npm cache entries. |
 | Client shows no tools | Verify the client's `PATH`, use an absolute binary path, and allow enough startup timeout. |
 | Path or root authorization errors | Start the client in the workspace or pass repeated `--allow-root <path>` flags. |
 | Semantic tools return unavailable | Install the pinned Rust Analyzer (`rustup component add rust-analyzer --toolchain 1.88.0`) and review the workspace-code policy in [docs/tools.md](tools.md#rust-analyzer-policy). |

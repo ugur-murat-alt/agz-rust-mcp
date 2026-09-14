@@ -14,9 +14,6 @@ Rust Analyzer navigation, and returns write-free rename/refactor packages.
 ## Install
 
 ```bash
-# npm wrapper (requires Node.js; resolves the matching release binary)
-npx -y @agz-yazilim/agz-rust-mcp@latest --version
-
 # installer script (Linux x86_64): download install.sh and SHA256SUMS from the
 # latest release, verify the script, then run it
 bash install.sh
@@ -52,15 +49,13 @@ Bundled skills are available from `0.4.0`; `0.3.0` binaries do not include them.
 | Codex | `~/.codex/config.toml` → `mcp_servers.rust` | [Codex](docs/install.md#codex-codexconfigtoml) |
 
 Use the example for your client; OpenCode and OpenCode2 have different layouts.
-All can launch `npx -y @agz-yazilim/agz-rust-mcp@latest`. Run it with `--version`
-once before connecting to complete the initial download. Use `@0.4.0` to pin
-this release. An older binary on PATH no longer overrides automatic resolution.
+All launch the installed `agz-rust-mcp` binary. Run `agz-rust-mcp --version`
+once before connecting, and use an absolute path if the client's `PATH` differs.
 
 The canonical current directory is the default authorized root. Add explicit
 roots with repeated `--allow-root` arguments when the client starts elsewhere;
 client-provided MCP roots may narrow configured access but never widen it. See
-[docs/install.md](docs/install.md#mcp-client-setup) for wrapper-managed client
-variants.
+[docs/install.md](docs/install.md#mcp-client-setup) for per-client setup.
 
 ## Documentation
 

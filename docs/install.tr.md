@@ -44,7 +44,7 @@ bağlı adaptörler yerel çalıştırılabilir önkoşullar olmaya devam eder.
 
 ### Skill dosyalarının istemcilere teslimi
 
-Çalıştırılabilir dosyanın kurulumu (npm dahil), istemci ayar dizinlerine otomatik
+Çalıştırılabilir dosyanın kurulumu, istemci ayar dizinlerine otomatik
 skill dosyası yazmaz. MCP prompt/resource'ları hemen sunulur; yerel skill keşfi
 için dışa aktarılan dört klasörün yerleştirilmesi gerekir. Yeni bir geçici dizine
 bir kez dışa aktarın; seçtiğiniz klasörleri mevcut özel bir skillin üzerine
@@ -65,25 +65,13 @@ yenilenmelidir. Kurulum, kullanıcı skill talimatlarını arka planda ezmez.
 - Linux, macOS veya Windows (x86_64) ya da macOS (arm64).
 - MCP destekli bir istemci (ZCode, OpenCode, OpenCode2, Codex veya başka bir stdio istemcisi).
 - Rust `1.88.0` veya üzeri yalnızca `cargo install` ve kaynak yöntemleri için.
-- Node.js yalnızca npm wrapper için.
 
-## 1. npm Wrapper
-
-```bash
-npx -y @agz-yazilim/agz-rust-mcp@latest --version
-```
-
-Wrapper yönetilen seçenektir: platformunuza uyan sürüm artifact'ını bulur ve
-önbelleğe alır, stdio'yu ona iletir; sunucu kendi makinenizde derlenmez.
-İstemci yapılandırmasında sabit bir wrapper sürümü belirtin; böylece
-güncellemeler bilinçli olur. İlk kullanımda Node.js ve ağ erişimi gerekir.
-
-## 2. Kurulum Betiği (`install.sh`)
+## 1. Kurulum Betiği (`install.sh`)
 
 Kurulum betiği bir sürüm arşivini indirir, yayımlanmış SHA-256 sağlama
 toplamını çıkarma öncesinde doğrular, symlink hedeflerini reddeder, hazırlanan
 binary'yi doğrular ve atomik olarak kurar. Şu anda yalnızca **Linux x86_64**
-destekler; diğer platformlar açık bir hata alır ve 3, 4 veya 5. yöntemi
+destekler; diğer platformlar açık bir hata alır ve 2, 3 veya 4. yöntemi
 kullanmalıdır.
 
 Kurulum betiğini ve sağlama toplamı manifestini sürüm sayfasından indirin,
@@ -117,7 +105,7 @@ mevcut dosyayı değiştirmeden önce doğrular. `SHA256SUMS` dosyası crate, ka
 paketi ve kurulum betiğini kapsar; her arşivin kendi `.tar.gz.sha256` dosyası
 vardır.
 
-## 3. Hazır Derlenmiş Arşivler
+## 2. Hazır Derlenmiş Arşivler
 
 Sürüm sayfaları `.tar.gz` arşivlerini eşleşen `.sha256` dosyasıyla sunar:
 
@@ -160,7 +148,7 @@ tar -xzf .\agz-rust-mcp-windows-x86_64.tar.gz
 Çıkarma öncesinde yazdırılan hash'i `.sha256` dosyasıyla karşılaştırın. Sağlama
 toplamı eşleşmeyen arşivi asla çalıştırmayın.
 
-## 4. crates.io (`cargo install`)
+## 3. crates.io (`cargo install`)
 
 Rust `1.88.0` veya üzeri gerekir:
 
@@ -175,7 +163,7 @@ Belirli bir sürüm için `cargo install agz-rust-mcp --version 0.4.0 --locked`
 kullanın. Cargo `$HOME/.cargo/bin` (Windows'ta `%USERPROFILE%\.cargo\bin`)
 dizinine kurar; bu dizinin `PATH` içinde olduğundan emin olun.
 
-## 5. Kaynaktan Derleme
+## 4. Kaynaktan Derleme
 
 ```bash
 git clone https://github.com/ugur-murat-alt/agz-rust-mcp
@@ -203,12 +191,10 @@ yola yönlendirin. Tam geliştirme kapısı için
 
 ## MCP İstemci Ayarı
 
-İstemciyi bağlamadan önce `npx -y @agz-yazilim/agz-rust-mcp@latest --version`
-komutunu bir kez çalıştırıp sürümü indirin ve doğrulayın. `@latest`, npm sürüm
-çözümlemesini açıkça yeniler; bu sürümü sabitlemek için `@0.4.0` kullanın.
-Otomatik PATH seçimi wrapper sürümüyle eşleşme ister; eski bir kurulu binary
-sessizce öne geçemez. `AGZ_RUST_MCP_BIN` bilinçli yerel geçersiz kılmadır ve
-otomatik sürüm seçimini atlar; yayımlanmış sürümü doğrularken bu değişkeni kaldırın.
+İstemciyi bağlamadan önce sürümü yukarıdaki yöntemlerden biriyle kurun ve
+çalıştırılabilir dosyayı `agz-rust-mcp --version` ile bir kez doğrulayın.
+`AGZ_RUST_MCP_BIN` bilinçli yerel geçersiz kılmadır ve otomatik PATH seçimini
+atlar; yayımlanmış sürümü doğrularken bu değişkeni kaldırın.
 
 ### Birden çok checkout, worktree ve paket alt dizini
 
@@ -247,8 +233,8 @@ yollarıdır; kullanıcı dosyasının yolunda ek bir `cli/` dizini bulunur.
   "mcp": {
     "servers": {
       "rust": {
-        "command": "npx",
-        "args": ["-y", "@agz-yazilim/agz-rust-mcp@latest"]
+        "command": "agz-rust-mcp",
+        "args": []
       }
     }
   }
@@ -271,7 +257,7 @@ Güncel OpenCode, komut dizisi ve sayısal timeout ile `mcp.rust` kullanır:
   "mcp": {
     "rust": {
       "type": "local",
-      "command": ["npx", "-y", "@agz-yazilim/agz-rust-mcp@latest"],
+      "command": ["agz-rust-mcp"],
       "enabled": true,
       "timeout": 120000
     }
@@ -308,12 +294,6 @@ kabul ettiği biçimi seçin.
 }
 ```
 
-Wrapper ile yönetilen varyant:
-
-```jsonc
-"command": ["npx", "-y", "@agz-yazilim/agz-rust-mcp@latest"],
-```
-
 ### Codex (`~/.codex/config.toml`)
 
 ```toml
@@ -322,21 +302,8 @@ command = "agz-rust-mcp"
 args = []
 ```
 
-Wrapper ile yönetilen varyant:
-
-```toml
-[mcp_servers.rust]
-command = "npx"
-args = ["-y", "@agz-yazilim/agz-rust-mcp@latest"]
-startup_timeout_sec = 120
-tool_timeout_sec = 720
-```
-
-Yönetilen wrapper notu: npm wrapper ile alttaki binary güncellendiğinde istemci
-yapılandırması değişmez; tekrarlanabilirlik için wrapper sürümünü sabitleyin.
-Doğrudan binary kullanıyorsanız istemcinin `PATH` değeri kabuğunuzdan farklıysa
-mutlak yol verin. Yapılandırmayı düzenledikten sonra istemciyi yeniden
-başlatın.
+İstemcinin `PATH` değeri kabuğunuzdan farklıysa mutlak yol verin.
+Yapılandırmayı düzenledikten sonra istemciyi yeniden başlatın.
 
 Yapılandırma önceliği CLI bayrakları, `AGZ_RUST_MCP_*` ortam değişkenleri,
 `--config` TOML ve varsayılanlardır; eksiksiz anahtar referansı
@@ -382,7 +349,6 @@ Yapılandırma önceliği CLI bayrakları, `AGZ_RUST_MCP_*` ortam değişkenleri
 | `agz-rust-mcp: command not found` | Kurulum dizinini (`$HOME/.local/bin` veya `$HOME/.cargo/bin`) `PATH`'e ekleyin ya da istemci yapılandırmasında mutlak yol kullanın. |
 | Sağlama toplamı uyuşmuyor | Arşivi ve `.sha256` dosyasını sürüm sayfasından yeniden indirin; doğrulamayı atlamayın. |
 | Kurulum betiği işletim sistemini/arch'i reddediyor | `install.sh` yalnız Linux x86_64 destekler; hazır arşiv, `cargo install` veya kaynak derleme kullanın. |
-| `npx` beklenmeyen sürümü başlatıyor | İstemci yapılandırmasında wrapper sürümünü sabitleyin ve eski npm önbellek kayıtlarını temizleyin. |
 | İstemci araç göstermiyor | İstemcinin `PATH` değerini doğrulayın, mutlak binary yolu kullanın ve başlangıç zaman aşımını yeterli tutun. |
 | Yol veya kök yetki hatası | İstemciyi workspace içinde başlatın veya tekrarlanan `--allow-root <yol>` bayrakları verin. |
 | Semantik araçlar erişilememe döndürüyor | Sabitlenmiş Rust Analyzer'ı kurun (`rustup component add rust-analyzer --toolchain 1.88.0`) ve workspace-code politikasını [docs/tools.tr.md](tools.tr.md) içinden inceleyin. |
