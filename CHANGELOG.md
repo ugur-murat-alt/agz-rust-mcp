@@ -8,6 +8,11 @@ Changelog structure.
 
 ## [Unreleased]
 
+### Removed
+
+- npm wrapper package and its distribution documentation; crates.io, release
+  archives, and `install.sh` are the supported install surfaces.
+
 ## [0.4.0] - 2026-09-13
 
 ### Added

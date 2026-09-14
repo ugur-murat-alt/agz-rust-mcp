@@ -15,9 +15,6 @@ paketleri döndürür.
 ## Kurulum
 
 ```bash
-# npm wrapper (Node.js gerekir; platforma uyan sürüm binary'sini bulur)
-npx -y @agz-yazilim/agz-rust-mcp@latest --version
-
 # kurulum betiği (Linux x86_64): install.sh ve SHA256SUMS dosyalarını en güncel
 # sürümden indirin, betiği doğrulayın, sonra çalıştırın
 bash install.sh
@@ -53,14 +50,14 @@ Paketli skilller `0.4.0` ile gelir; `0.3.0` binary'lerinde bulunmaz.
 | Codex | `~/.codex/config.toml` → `mcp_servers.rust` | [Codex](docs/install.tr.md#codex-codexconfigtoml) |
 
 İstemcinize ait örneği kullanın; OpenCode ve OpenCode2'nin biçimleri farklıdır.
-Hepsi `npx -y @agz-yazilim/agz-rust-mcp@latest` başlatabilir. İlk indirme için
-bağlamadan önce komutu bir kez `--version` ile çalıştırın. Bu sürümü sabitlemek
-için `@0.4.0` kullanın. PATH'teki eski binary artık otomatik sürüm seçimini ezmez.
+Hepsi kurulu `agz-rust-mcp` binary'sini başlatır. Bağlamadan önce bir kez
+`agz-rust-mcp --version` çalıştırın; istemcinin `PATH` değeri farklıysa mutlak
+yol kullanın.
 
 Kanonik çalışma dizini varsayılan yetkili köktür. İstemci başka yerde
 başlatılıyorsa tekrarlanan `--allow-root` argümanlarıyla açık kökler ekleyin;
 istemcinin MCP kökleri yapılandırılmış erişimi daraltabilir, genişletemez.
-Wrapper ile yönetilen istemci varyantları için
+İstemci bazlı kurulum için
 [docs/install.tr.md](docs/install.tr.md) dosyasına bakın.
 
 ## Belgeler
